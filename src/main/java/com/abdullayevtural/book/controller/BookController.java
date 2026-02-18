@@ -21,8 +21,6 @@ import com.abdullayevtural.book.exception.MyValidationException;
 import com.abdullayevtural.book.service.BookService;
 
 import jakarta.validation.Valid;
-
-import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -31,38 +29,43 @@ import lombok.extern.slf4j.Slf4j;
 public class BookController {
 	@Autowired
 	private BookService service;
-	
+
 	@GetMapping
-	public List<BookResponseDto> getAllBooks(){
+	public List<BookResponseDto> getAllBooks() {
 		log.info("Info: XML konfiqurasiyasi isleyir!");
 		return service.getAllBooks();
-		
+
 	}
+
 	@PostMapping
 	@ResponseStatus(code = HttpStatus.CREATED)
-	public BookResponseDto createBook(@Valid @RequestBody BookRequestDto request,BindingResult br ) {
-		if(br.hasErrors()) {
+	public BookResponseDto createBook(@Valid @RequestBody BookRequestDto request, BindingResult br) {
+		if (br.hasErrors()) {
 			throw new MyValidationException(br);
 		}
 		return service.createBook(request);
 	}
-	@DeleteMapping
+
+	@DeleteMapping("/{id}")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	public void deleteBook(@PathVariable Long id) {
 		service.deleteBookById(id);
 	}
+
 	@GetMapping("/{id}")
 	public BookResponseDto getBookById(@PathVariable Long id) {
 		log.info("Info: XML konfiqurasiyasi isleyir!");
 		return service.getBookById(id);
 	}
+
 	@PutMapping("/{id}")
-	public BookResponseDto updateBook(@PathVariable Long id, @Valid @RequestBody BookRequestDto request,BindingResult br) {
-		if(br.hasErrors()) {
+	public BookResponseDto updateBook(@PathVariable Long id, @Valid @RequestBody BookRequestDto request,
+			BindingResult br) {
+		if (br.hasErrors()) {
 			throw new MyValidationException(br);
 		}
 		return service.updateBook(id, request);
-		
+
 	}
 
 }
