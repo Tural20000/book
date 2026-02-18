@@ -16,8 +16,8 @@ INSERT INTO roles (name) VALUES ( 'ROLE_ADD');
 INSERT INTO roles (name) VALUES ( 'ROLE_UPDATE');
 INSERT INTO roles (name) VALUES ( 'ROLE_DELETE');
 
-INSERT INTO users (username, password) VALUES ( 'tural', '$2a$12$AXXj9t.V73x5iCEmRD0X..AboDocEu7aK12Xaf1dbNmN137CvcDZG');
-INSERT INTO users (username, password) VALUES (  'james', '$2a$12$LFUr22cICWGloDk4/jNwX.2OV5U52DwA7lE3D9YDzeLw6OVoYtaWS');
+INSERT INTO users (username, password) VALUES ( 'tural', '$2a$12$iywob8yboFliQZsEdQW8tuS7RdTMhWhuL9V6Dhea7M5wCHc2GLj..');
+INSERT INTO users (username, password) VALUES (  'james', '$2a$12$tjIxTgFFCdC8jWtlpP8aduzvdXdLMcwtAgiYjNv.iXPEMgnyFrGtW');
 
 INSERT INTO user_roles (user_id, role_id) VALUES (1, 1);
 INSERT INTO user_roles (user_id, role_id) VALUES (1, 2);
