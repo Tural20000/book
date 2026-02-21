@@ -63,37 +63,39 @@ public class BookService {
 		}
 		repository.deleteById(id);
 	}
-	@Cacheable(value = "books",key = "#id")
+
+	@Cacheable(value = "books", key = "#id")
 	public BookResponseDto getBookById(Long id) {
-		log.info("DB-den kitab getirilir: ID{}",id);
-		BookEntity book=repository.findById(id)
+		log.info("DB-den kitab getirilir: ID{}", id);
+		BookEntity book = repository.findById(id)
 				.orElseThrow(() -> new BookNotFoundException("Bu ID-li kitab tapilmadi: ID= " + id));
-		BookResponseDto dto= new BookResponseDto();
+		BookResponseDto dto = new BookResponseDto();
 		dto.setId(book.getId());
 		dto.setName(book.getName());
 		dto.setAuthor(book.getAuthor());
 		dto.setPrice(book.getPrice());
 		dto.setQuantity(book.getQuantity());
-		
+
 		return dto;
 	}
+
 	public BookResponseDto updateBook(Long id, BookRequestDto request) {
-		BookEntity book=repository.findById(id)
-				.orElseThrow(() -> new BookNotFoundException("Bu ID-li kitab tapilmadi: ID + "+ id));
+		BookEntity book = repository.findById(id)
+				.orElseThrow(() -> new BookNotFoundException("Bu ID-li kitab tapilmadi: ID + " + id));
 		book.setName(request.getName());
 		book.setAuthor(request.getAuthor());
 		book.setPrice(request.getPrice());
 		book.setQuantity(request.getQuantity());
-		
+
 		BookEntity updateBook = repository.save(book);
-		BookResponseDto dto= new BookResponseDto();
-		
+		BookResponseDto dto = new BookResponseDto();
+
 		dto.setId(updateBook.getId());
 		dto.setAuthor(updateBook.getAuthor());
 		dto.setName(updateBook.getName());
 		dto.setPrice(updateBook.getPrice());
 		dto.setQuantity(updateBook.getQuantity());
-		
+
 		return dto;
 	}
 }

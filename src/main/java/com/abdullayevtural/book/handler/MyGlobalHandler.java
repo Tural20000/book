@@ -1,6 +1,5 @@
 package com.abdullayevtural.book.handler;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,30 +21,30 @@ public class MyGlobalHandler {
 	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
 	public String MyHandlerException(BookNotFoundException ex) {
 		return ex.getMessage();
-		
-		
+
 	}
+
 	@ExceptionHandler
 	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
-	public List<Field> handlerMyValidationException(MyValidationException ex){
-		BindingResult br=ex.getBr();
-		
-		List<FieldError> fieldErrors= br.getFieldErrors();
+	public List<Field> handlerMyValidationException(MyValidationException ex) {
+		BindingResult br = ex.getBr();
+
+		List<FieldError> fieldErrors = br.getFieldErrors();
 		List<Field> errors = new ArrayList<Field>();
-		for(FieldError fe: fieldErrors) {
-			Field f=new Field();
+		for (FieldError fe : fieldErrors) {
+			Field f = new Field();
 			f.setField(fe.getField());
 			f.setMessage(fe.getDefaultMessage());
 			errors.add(f);
 		}
 		return errors;
-		
-		
+
 	}
 
 }
+
 @Data
-class Field{
+class Field {
 	private String field;
 	private String message;
 }
