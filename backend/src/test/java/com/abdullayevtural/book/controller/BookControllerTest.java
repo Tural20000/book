@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.abdullayevtural.book.dto.BookRequestDto;
@@ -65,6 +66,7 @@ class BookControllerTest {
 	}
 
 	@Test
+	@WithMockUser
 	@DisplayName("GET /api/books - Should return all books")
 	void getAllBooks_shouldReturnAllBooks() throws Exception {
 		// Arrange
@@ -85,6 +87,7 @@ class BookControllerTest {
 	}
 
 	@Test
+	@WithMockUser
 	@DisplayName("GET /api/books/{id} - Should return book by id")
 	void getBookById_shouldReturnBook_whenBookExists() throws Exception {
 		// Arrange
@@ -100,6 +103,7 @@ class BookControllerTest {
 	}
 
 	@Test
+	@WithMockUser
 	@DisplayName("GET /api/books/{id} - Should return 404 when book not found")
 	void getBookById_shouldReturn404_whenBookNotFound() throws Exception {
 		// Arrange
@@ -113,6 +117,7 @@ class BookControllerTest {
 	}
 
 	@Test
+	@WithMockUser
 	@DisplayName("POST /api/books - Should create book and return 201")
 	void createBook_shouldCreateBook_whenValidRequest() throws Exception {
 		// Arrange
@@ -128,6 +133,7 @@ class BookControllerTest {
 	}
 
 	@Test
+	@WithMockUser
 	@DisplayName("POST /api/books - Should return 400 when validation fails")
 	void createBook_shouldReturn400_whenValidationFails() throws Exception {
 		// Arrange
@@ -145,6 +151,7 @@ class BookControllerTest {
 	}
 
 	@Test
+	@WithMockUser
 	@DisplayName("PUT /api/books/{id} - Should update book and return updated book")
 	void updateBook_shouldUpdateBook_whenValidRequest() throws Exception {
 		// Arrange
@@ -167,6 +174,7 @@ class BookControllerTest {
 	}
 
 	@Test
+	@WithMockUser
 	@DisplayName("PUT /api/books/{id} - Should return 404 when book not found")
 	void updateBook_shouldReturn404_whenBookNotFound() throws Exception {
 		// Arrange
@@ -181,6 +189,7 @@ class BookControllerTest {
 	}
 
 	@Test
+	@WithMockUser
 	@DisplayName("DELETE /api/books/{id} - Should delete book and return 204")
 	void deleteBook_shouldDeleteBook_whenBookExists() throws Exception {
 		// Arrange
@@ -194,6 +203,7 @@ class BookControllerTest {
 	}
 
 	@Test
+	@WithMockUser
 	@DisplayName("DELETE /api/books/{id} - Should return error when book not found")
 	void deleteBook_shouldReturnError_whenBookNotFound() throws Exception {
 		// Arrange

@@ -35,6 +35,7 @@ class BookRepositoryTest {
 		bookEntity.setAuthor("Test Author");
 		bookEntity.setPrice(25.50);
 		bookEntity.setQuantity(10L);
+		bookEntity.setUserId(1L);
 	}
 
 	@Test
@@ -78,26 +79,40 @@ class BookRepositoryTest {
 	}
 
 	@Test
-	@DisplayName("Should find all books")
-	void findAll_shouldFindAllBooks() {
+	@DisplayName("Should find all books by user id")
+	void findByUserId_shouldFindUserBooks() {
 		// Arrange
-		BookEntity book1 = new BookEntity(null, "Book 1", "Author 1", 10.0, 5L);
-		BookEntity book2 = new BookEntity(null, "Book 2", "Author 2", 20.0, 3L);
-		BookEntity book3 = new BookEntity(null, "Book 3", "Author 3", 30.0, 7L);
-
+		Long userId = 1L;
+		BookEntity book1 = new BookEntity(null, "Book 1", "Author 1", 10.0, 5L, userId);
+		BookEntity book2 = new BookEntity(null, "Book 2", "Author 2", 20.0, 3L, userId);
 		bookRepository.save(book1);
 		bookRepository.save(book2);
-		bookRepository.save(book3);
 
 		// Act
-		List<BookEntity> allBooks = bookRepository.findAll();
+		List<BookEntity> userBooks = bookRepository.findByUserIdOrderByIdAsc(userId);
 
 		// Assert
-		assertNotNull(allBooks);
-		assertTrue(allBooks.size() >= 3);
-		assertTrue(allBooks.stream().anyMatch(b -> "Book 1".equals(b.getName())));
-		assertTrue(allBooks.stream().anyMatch(b -> "Book 2".equals(b.getName())));
-		assertTrue(allBooks.stream().anyMatch(b -> "Book 3".equals(b.getName())));
+		assertNotNull(userBooks);
+		assertEquals(2, userBooks.size());
+		assertTrue(userBooks.stream().anyMatch(b -> "Book 1".equals(b.getName())));
+		assertTrue(userBooks.stream().anyMatch(b -> "Book 2".equals(b.getName())));
+	}
+
+	@Test
+	@DisplayName("Should find by id and user id")
+	void findByIdAndUserId_shouldFindBook_whenOwnedByUser() {
+		BookEntity saved = bookRepository.save(bookEntity);
+		Optional<BookEntity> found = bookRepository.findByIdAndUserId(saved.getId(), 1L);
+		assertTrue(found.isPresent());
+		assertEquals("Test Book", found.get().getName());
+	}
+
+	@Test
+	@DisplayName("Should return empty when book belongs to other user")
+	void findByIdAndUserId_shouldReturnEmpty_whenOtherUser() {
+		BookEntity saved = bookRepository.save(bookEntity);
+		Optional<BookEntity> found = bookRepository.findByIdAndUserId(saved.getId(), 999L);
+		assertFalse(found.isPresent());
 	}
 
 	@Test
@@ -159,28 +174,18 @@ class BookRepositoryTest {
 	@Test
 	@DisplayName("Should count all books")
 	void count_shouldReturnCorrectCount() {
-		// Arrange
-		bookRepository.save(new BookEntity(null, "Book 1", "Author 1", 10.0, 5L));
-		bookRepository.save(new BookEntity(null, "Book 2", "Author 2", 20.0, 3L));
-
-		// Act
+		bookRepository.save(new BookEntity(null, "Book 1", "Author 1", 10.0, 5L, 1L));
+		bookRepository.save(new BookEntity(null, "Book 2", "Author 2", 20.0, 3L, 1L));
 		long count = bookRepository.count();
-
-		// Assert
 		assertTrue(count >= 2);
 	}
 
 	@Test
 	@DisplayName("Should delete all books")
 	void deleteAll_shouldDeleteAllBooks() {
-		// Arrange
-		bookRepository.save(new BookEntity(null, "Book 1", "Author 1", 10.0, 5L));
-		bookRepository.save(new BookEntity(null, "Book 2", "Author 2", 20.0, 3L));
-
-		// Act
+		bookRepository.save(new BookEntity(null, "Book 1", "Author 1", 10.0, 5L, 1L));
+		bookRepository.save(new BookEntity(null, "Book 2", "Author 2", 20.0, 3L, 1L));
 		bookRepository.deleteAll();
-
-		// Assert
 		assertEquals(0, bookRepository.count());
 	}
 }

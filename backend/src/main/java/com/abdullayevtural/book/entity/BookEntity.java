@@ -23,5 +23,7 @@ public class BookEntity {
 	private String author;
 	private Double price;
 	private Long quantity;
+	/** Kitabın sahibi olan istifadəçinin ID-si */
+	private Long userId;
 
 }
