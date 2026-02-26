@@ -37,12 +37,12 @@ public class AuthController {
 	private RefreshTokenUtil refreshTokenUtil;
 
 	@PostMapping("/login")
-	public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthRequest authRequest) throws Exception {
+	public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthRequest authRequest) {
 		try {
 			authenticationManager.authenticate(
 					new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
 		} catch (BadCredentialsException e) {
-			throw new Exception("Incorrect username or password", e);
+			return ResponseEntity.status(401).body("Incorrect username or password");
 		}
 
 		final UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getUsername());

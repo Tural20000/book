@@ -93,7 +93,7 @@ class AuthControllerTest {
 
 		// Act & Assert
 		mockMvc.perform(post("/apis/login").contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(authRequest))).andExpect(status().isInternalServerError());
+				.content(objectMapper.writeValueAsString(authRequest))).andExpect(status().isUnauthorized());
 	}
 
 	@Test

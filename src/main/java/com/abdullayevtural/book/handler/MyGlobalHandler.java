@@ -18,7 +18,7 @@ import lombok.Data;
 @RestControllerAdvice
 public class MyGlobalHandler {
 	@ExceptionHandler
-	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
+	@ResponseStatus(code = HttpStatus.NOT_FOUND)
 	public String MyHandlerException(BookNotFoundException ex) {
 		return ex.getMessage();
 

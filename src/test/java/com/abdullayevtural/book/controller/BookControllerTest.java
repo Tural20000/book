@@ -107,7 +107,7 @@ class BookControllerTest {
 
 		// Act & Assert
 		mockMvc.perform(get("/api/books/999").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isInternalServerError());
+				.andExpect(status().isNotFound());
 
 		verify(bookService, org.mockito.Mockito.times(1)).getBookById(999L);
 	}
@@ -175,7 +175,7 @@ class BookControllerTest {
 
 		// Act & Assert
 		mockMvc.perform(put("/api/books/999").contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(bookRequestDto))).andExpect(status().isInternalServerError());
+				.content(objectMapper.writeValueAsString(bookRequestDto))).andExpect(status().isNotFound());
 
 		verify(bookService, org.mockito.Mockito.times(1)).updateBook(eq(999L), any(BookRequestDto.class));
 	}
@@ -201,7 +201,7 @@ class BookControllerTest {
 
 		// Act & Assert
 		mockMvc.perform(delete("/api/books/999").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isInternalServerError());
+				.andExpect(status().isNotFound());
 
 		verify(bookService, org.mockito.Mockito.times(1)).deleteBookById(999L);
 	}

@@ -1,6 +1,5 @@
 package com.abdullayevtural.book.service;
 
-import java.awt.desktop.OpenFilesEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,7 +80,7 @@ public class BookService {
 
 	public BookResponseDto updateBook(Long id, BookRequestDto request) {
 		BookEntity book = repository.findById(id)
-				.orElseThrow(() -> new BookNotFoundException("Bu ID-li kitab tapilmadi: ID + " + id));
+				.orElseThrow(() -> new BookNotFoundException("Bu ID-li kitab tapilmadi: ID= " + id));
 		book.setName(request.getName());
 		book.setAuthor(request.getAuthor());
 		book.setPrice(request.getPrice());
