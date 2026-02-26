@@ -52,33 +52,15 @@
         <div class="books-header">
           <h2>Kitablar</h2>
           <div class="books-actions">
-            <button id="logout-btn" class="secondary">Çıxış</button>
+            <button id="open-create-modal-btn" class="secondary">Əlavə et</button>
             <button id="refresh-btn">Yenilə</button>
+            <button id="logout-btn" class="secondary">Çıxış</button>
           </div>
         </div>
 
-        <form id="book-form" class="form inline-form">
-          <input type="hidden" id="book-id" />
-          <label>
-            Ad
-            <input type="text" id="book-name" required />
-          </label>
-          <label>
-            Müəllif
-            <input type="text" id="book-author" required />
-          </label>
-          <label>
-            Qiymət
-            <input type="number" step="0.01" id="book-price" required />
-          </label>
-          <label>
-            Say
-            <input type="number" id="book-quantity" required />
-          </label>
-          <button type="submit" id="book-save-btn">Əlavə et</button>
-          <button type="button" id="book-cancel-edit-btn" class="secondary hidden">Ləğv et</button>
-          <p class="form-message" id="book-form-message"></p>
-        </form>
+        <div class="books-search">
+          <input type="text" id="book-search" placeholder="Ada görə axtar..." />
+        </div>
 
         <div class="table-wrapper">
           <table id="books-table">
@@ -112,6 +94,35 @@
       </td>
     </tr>
   </template>
+  
+  <div id="book-modal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <h3 id="book-modal-title">Kitab əlavə et</h3>
+      <form id="book-form" class="form">
+        <input type="hidden" id="book-id" />
+        <label>
+          Ad
+          <input type="text" id="book-name" required />
+        </label>
+        <label>
+          Müəllif
+          <input type="text" id="book-author" required />
+        </label>
+        <label>
+          Qiymət
+          <input type="number" step="0.01" id="book-price" required />
+        </label>
+        <label>
+          Say
+          <input type="number" id="book-quantity" required />
+        </label>
+        <button type="submit" id="book-save-btn">Əlavə et</button>
+        <button type="button" id="book-cancel-btn" class="secondary">Ləğv et</button>
+        <p class="form-message" id="book-form-message"></p>
+      </form>
+    </div>
+  </div>
 
   <script src="app.js"></script>
 </body>

@@ -70,48 +70,37 @@ function switchAuthTab(tab) {
   }
 }
 
-async function loadBooks() {
+let allBooks = [];
+
+function renderBooks(list) {
   const tbody = document.querySelector("#books-table tbody");
+  const template = document.getElementById("book-row-template");
   tbody.innerHTML = "";
 
+  list.forEach((book) => {
+    const rowFragment = template.content.cloneNode(true);
+    const tr = rowFragment.querySelector("tr");
+    tr.dataset.id = book.id;
+    tr.querySelector(".cell-id").textContent = book.id;
+    tr.querySelector(".cell-name").textContent = book.name;
+    tr.querySelector(".cell-author").textContent = book.author;
+    tr.querySelector(".cell-price").textContent = book.price;
+    tr.querySelector(".cell-quantity").textContent = book.quantity;
+    tbody.appendChild(rowFragment);
+  });
+}
+
+async function loadBooks() {
   try {
     const books = await apiRequest("/api/books", {
       method: "GET",
     });
-    const template = document.getElementById("book-row-template");
-
-    books.forEach((book) => {
-      const rowFragment = template.content.cloneNode(true);
-      const tr = rowFragment.querySelector("tr");
-      tr.dataset.id = book.id;
-      tr.querySelector(".cell-id").textContent = book.id;
-      tr.querySelector(".cell-name").textContent = book.name;
-      tr.querySelector(".cell-author").textContent = book.author;
-      tr.querySelector(".cell-price").textContent = book.price;
-      tr.querySelector(".cell-quantity").textContent = book.quantity;
-      tbody.appendChild(rowFragment);
-    });
+    allBooks = Array.isArray(books) ? books : [];
+    renderBooks(allBooks);
   } catch (err) {
     console.error(err);
     alert("Kitabları yükləmək mümkün olmadı: " + err.message);
   }
-}
-
-function fillBookFormFromRow(tr) {
-  const id = tr.dataset.id;
-  const name = tr.querySelector(".cell-name").textContent;
-  const author = tr.querySelector(".cell-author").textContent;
-  const price = tr.querySelector(".cell-price").textContent;
-  const quantity = tr.querySelector(".cell-quantity").textContent;
-
-  document.getElementById("book-id").value = id;
-  document.getElementById("book-name").value = name;
-  document.getElementById("book-author").value = author;
-  document.getElementById("book-price").value = price;
-  document.getElementById("book-quantity").value = quantity;
-
-  document.getElementById("book-save-btn").textContent = "Yenilə";
-  showElement(document.getElementById("book-cancel-edit-btn"));
 }
 
 function resetBookForm() {
@@ -121,10 +110,38 @@ function resetBookForm() {
   document.getElementById("book-price").value = "";
   document.getElementById("book-quantity").value = "";
   document.getElementById("book-save-btn").textContent = "Əlavə et";
-  hideElement(document.getElementById("book-cancel-edit-btn"));
   const msg = document.getElementById("book-form-message");
   msg.textContent = "";
   msg.classList.remove("success");
+}
+
+function openBookModal(mode, book) {
+  const modal = document.getElementById("book-modal");
+  const titleEl = document.getElementById("book-modal-title");
+  const saveBtn = document.getElementById("book-save-btn");
+
+  resetBookForm();
+
+  if (mode === "edit" && book) {
+    document.getElementById("book-id").value = book.id;
+    document.getElementById("book-name").value = book.name;
+    document.getElementById("book-author").value = book.author;
+    document.getElementById("book-price").value = book.price;
+    document.getElementById("book-quantity").value = book.quantity;
+    titleEl.textContent = "Kitabı redaktə et";
+    saveBtn.textContent = "Redaktə et";
+  } else {
+    titleEl.textContent = "Yeni kitab əlavə et";
+    saveBtn.textContent = "Əlavə et";
+  }
+
+  showElement(modal);
+}
+
+function closeBookModal() {
+  const modal = document.getElementById("book-modal");
+  hideElement(modal);
+  resetBookForm();
 }
 
 function showBooksUI() {
@@ -147,8 +164,10 @@ window.addEventListener("DOMContentLoaded", () => {
   const logoutBtn = document.getElementById("logout-btn");
   const refreshBtn = document.getElementById("refresh-btn");
   const bookForm = document.getElementById("book-form");
-  const bookCancelEditBtn = document.getElementById("book-cancel-edit-btn");
+  const bookCancelBtn = document.getElementById("book-cancel-btn");
   const booksTbody = document.querySelector("#books-table tbody");
+  const openCreateModalBtn = document.getElementById("open-create-modal-btn");
+  const bookSearchInput = document.getElementById("book-search");
 
   if (getJwt()) {
     showBooksUI();
@@ -230,6 +249,24 @@ window.addEventListener("DOMContentLoaded", () => {
     loadBooks();
   });
 
+  if (openCreateModalBtn) {
+    openCreateModalBtn.addEventListener("click", () => openBookModal("create"));
+  }
+
+  if (bookSearchInput) {
+    bookSearchInput.addEventListener("input", () => {
+      const query = bookSearchInput.value.toLowerCase();
+      if (!query) {
+        renderBooks(allBooks);
+      } else {
+        const filtered = allBooks.filter((b) =>
+          (b.name || "").toLowerCase().includes(query)
+        );
+        renderBooks(filtered);
+      }
+    });
+  }
+
   bookForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const id = document.getElementById("book-id").value;
@@ -263,15 +300,15 @@ window.addEventListener("DOMContentLoaded", () => {
         msg.textContent = "Kitab uğurla əlavə olundu.";
       }
       msg.classList.add("success");
-      resetBookForm();
+      closeBookModal();
       loadBooks();
     } catch (err) {
       msg.textContent = err.message || "Əməliyyat zamanı xəta baş verdi.";
     }
   });
 
-  bookCancelEditBtn.addEventListener("click", () => {
-    resetBookForm();
+  bookCancelBtn.addEventListener("click", () => {
+    closeBookModal();
   });
 
   booksTbody.addEventListener("click", async (e) => {
@@ -285,7 +322,10 @@ window.addEventListener("DOMContentLoaded", () => {
     if (!id) return;
 
     if (editBtn) {
-      fillBookFormFromRow(tr);
+      const book = allBooks.find((b) => String(b.id) === String(id));
+      if (book) {
+        openBookModal("edit", book);
+      }
     } else if (deleteBtn) {
       if (!confirm("Bu kitabı silmək istədiyinizə əminsiniz?")) return;
       try {
